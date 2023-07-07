@@ -12,7 +12,7 @@ let temp;
 
 console.log(title,price,taxes,ads,discount,count,total,category,submit);
 
-// 1 get total
+// First Function Get Total
 let getTotal = () => {
     if(price.value != ''){
         let result = (+price.value + +taxes.value + +ads.value) - +discount.value;
@@ -27,8 +27,7 @@ let getTotal = () => {
 }
 
 
-
-// 2 create product
+// Seconed Function create product
 let dataProduc;
 if(localStorage.product != null){
     dataProduc = JSON.parse(localStorage.product)  
@@ -39,32 +38,43 @@ if(localStorage.product != null){
 submit.onclick = function(){
 
     let newPro = {
-        title : title.value,
+        title : title.value.toLowerCase(),
         price : price.value,
         taxes : taxes.value,
         ads : ads.value,
         discount : discount.value,
         total : total.innerHTML,
-        category : category.value,
+        category : category.value.toLowerCase(),
         count : count.value,
     }
     
-    if(mood === 'create'){
-        // count
-    if(newPro.count > 1 ){
-        for(let i = 0; i < newPro.count ; i++){
+    if
+    (
+    title.value != "" 
+    && price.value != "" 
+    && category.value != ""
+    && newPro.count <= 100 
+    )
+    {
+        if(mood === 'create'){
+            // count
+        if(newPro.count > 1 ){
+            for(let i = 0; i < newPro.count ; i++){
+                dataProduc.push(newPro);
+            }
+        }else{
             dataProduc.push(newPro);
         }
-    }else{
-        dataProduc.push(newPro);
-    }
-   
-    }else{
-        dataProduc[temp] = newPro;
-        mood = 'create';
-        submit.innerHTML = 'create';
-        count.style.display = 'block';
-
+       
+        }else{
+            dataProduc[temp] = newPro;
+            mood = 'create';
+            submit.innerHTML = 'create';
+            count.style.display = 'block';
+    
+        }
+        // clear Input
+        clearData();
     }
 
     // save localstroge
@@ -73,8 +83,7 @@ submit.onclick = function(){
     // Show Data
     showData();
 
-    // clear Input
-    clearData();
+  
 
 }
 
@@ -93,8 +102,6 @@ function clearData(){
 }
 
 
-
-
 // read
 function showData(){
     getTotal();
@@ -102,7 +109,7 @@ function showData(){
     for(let i = 0; i < dataProduc.length; i++){
         table += `
         <tr>
-            <td>${i}</td>
+            <td>${i+1}</td>
             <td>${dataProduc[i].title}</td>
             <td>${dataProduc[i].price}</td>
             <td>${dataProduc[i].taxes}</td>
@@ -124,16 +131,18 @@ function showData(){
         btnData.innerHTML = '';
     }
 }
+
 // Show Data
 showData();
 
 // delete
+// First Function Delete
 function deleteData(i){
     dataProduc.splice(i,1);
     localStorage.product = JSON.stringify(dataProduc);
     showData();
 }
-
+// seconed Function Delete
 function deleteAll(){
     localStorage.clear();
     dataProduc.splice(0);
@@ -144,7 +153,6 @@ function deleteAll(){
 
 
 // update
-
 function updataData(i){
     title.value = dataProduc[i].title;
     price.value = dataProduc[i].price;
@@ -164,5 +172,73 @@ function updataData(i){
 }
 
 // search
+let searchMood = 'title';
+
+// First Function Search
+function getSearchMood(id)
+{
+    let search = document.getElementById('search');
+    if(id === 'searchTitle'){
+        searchMood = 'title';
+    }else{
+        searchMood = 'category';
+        
+    }
+    search.placeholder = 'Search By ' + searchMood;
+    search.focus();
+    search.value = '';
+    showData();
+}
+
+// Seconed Function Search
+function searchDate(value)
+{
+    let table = '';
+    for(let i = 0; i < dataProduc.length; i++){
+    if(searchMood === 'title'){
+            if(dataProduc[i].title.includes(value.toLowerCase())){
+
+                table += `
+                <tr>
+                    <td>${i}</td>
+                    <td>${dataProduc[i].title}</td>
+                    <td>${dataProduc[i].price}</td>
+                    <td>${dataProduc[i].taxes}</td>
+                    <td>${dataProduc[i].ads}</td>
+                    <td>${dataProduc[i].discount}</td>
+                    <td>${dataProduc[i].total}</td>
+                    <td>${dataProduc[i].category}</td>
+                    <td><button onclick='updataData(${i})' id="update">update</button></td>
+                    <td><button onclick='deleteData(${i})' id="delete">delete</button></td>
+                </tr>
+                `
+
+            }
+
+    }else{
+            if(dataProduc[i].category.includes(value.toLowerCase())){
+
+                table += `
+                <tr>
+                    <td>${i}</td>
+                    <td>${dataProduc[i].title}</td>
+                    <td>${dataProduc[i].price}</td>
+                    <td>${dataProduc[i].taxes}</td>
+                    <td>${dataProduc[i].ads}</td>
+                    <td>${dataProduc[i].discount}</td>
+                    <td>${dataProduc[i].total}</td>
+                    <td>${dataProduc[i].category}</td>
+                    <td><button onclick='updataData(${i})' id="update">update</button></td>
+                    <td><button onclick='deleteData(${i})' id="delete">delete</button></td>
+                </tr>
+                `
+
+            }
+      
+    }
+}
+    document.getElementById('tbody').innerHTML = table;
+}
+
 
 // clean data

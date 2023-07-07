@@ -31,10 +31,10 @@
 
         <div class="outputs">
             <div class="searchBlock">
-                <input type="text" id="search" placeholder="Search">
+                <input type="text" onkeyup="searchDate(this.value)" id="search" placeholder="Search">
                 <div class="btnSearch">
-                    <button id="searchTitle">Search By Title</button>
-                    <button id="searchCategory">Search By Category</button>
+                    <button id="searchTitle" onclick="getSearchMood(this.id)">Search By Title</button>
+                    <button id="searchCategory" onclick="getSearchMood(this.id)">Search By Category</button>
                 </div>
             </div>
             <div id="dataAll"></div>
